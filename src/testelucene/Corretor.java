@@ -18,7 +18,7 @@ import org.languagetool.rules.RuleMatch;
 public class Corretor {
 
     public void getErrors(String text) throws IOException {        
-        JLanguageTool langTool = new JLanguageTool(new BrazilianPortuguese());        
+        JLanguageTool langTool = new JLanguageTool(new BrazilianPortuguese());
         List<RuleMatch> matches = langTool.check(text);        
         for(RuleMatch match : matches) {
             System.out.println(match.getMessage() + ": \"" +
