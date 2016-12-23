@@ -2,6 +2,8 @@ package testelucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,26 +19,25 @@ import org.languagetool.rules.RuleMatch;
 
 public class Corretor {
 
-    public void getErrors(String text) throws IOException {        
+    public List<String> getErrors(String text) throws IOException {
+        String[] suggestions;
+        ArrayList<String> finalSuggestions = new ArrayList();
         JLanguageTool langTool = new JLanguageTool(new BrazilianPortuguese());
         List<RuleMatch> matches = langTool.check(text);        
         for(RuleMatch match : matches) {
             if(match.getRule().getId().equals("HUNSPELL_NO_SUGGEST_RULE")){
-                System.out.println(match.getMessage() + ": \"" +
-                        text.substring(match.getFromPos(), match.getToPos()) + "\"");
-                System.out.println("Você quis dizer: ");
                 try {
-                    String[] suggestions = getSuggests(text.substring(match.getFromPos(), match.getToPos()));
-                    for(String suggestion: suggestions)
-                        System.out.println(suggestion);
+                    suggestions = getSuggests(text.substring(match.getFromPos(), match.getToPos()));
+                    finalSuggestions.addAll(Arrays.asList(suggestions));
                 } catch (Exception ex) {
                     Logger.getLogger(Corretor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
+        return finalSuggestions;
     }
     
-    public String[] getSuggests(String wordForSuggestions) throws Exception {
+    private String[] getSuggests(String wordForSuggestions) throws Exception {
         File dir = new File("C:/Users/ATENDIMENTO 13/Desktop/Sugestões Correção/Arquivos Lucene");
         Directory directory = FSDirectory.open(dir.toPath());
         SpellChecker spellChecker = new SpellChecker(directory);
@@ -44,7 +45,7 @@ public class Corretor {
         spellChecker.indexDictionary(new PlainTextDictionary(new File("C:/Users/ATENDIMENTO 13/Desktop/Sugestões Correção/Dicionário/pt-BR.dic").toPath()),
                 new IndexWriterConfig(new StandardAnalyzer()), false);
         
-        int suggestionsNumber = 3;
+        int suggestionsNumber = 2;
         String[] suggestions = spellChecker.suggestSimilar(wordForSuggestions, suggestionsNumber);
         return suggestions;
     }
