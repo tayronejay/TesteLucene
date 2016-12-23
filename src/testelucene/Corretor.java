@@ -21,15 +21,17 @@ public class Corretor {
         JLanguageTool langTool = new JLanguageTool(new BrazilianPortuguese());
         List<RuleMatch> matches = langTool.check(text);        
         for(RuleMatch match : matches) {
-            System.out.println(match.getMessage() + ": \"" +
-                    text.substring(match.getFromPos(), match.getToPos()) + "\"");
-            System.out.println("Sugestões de correção(ões):");
-            try {
-                String[] suggestions = getSuggests(text.substring(match.getFromPos(), match.getToPos()));
-                for(String suggestion: suggestions)
-                    System.out.println(suggestion);
-            } catch (Exception ex) {
-                Logger.getLogger(Corretor.class.getName()).log(Level.SEVERE, null, ex);
+            if(match.getRule().getId().equals("HUNSPELL_NO_SUGGEST_RULE")){
+                System.out.println(match.getMessage() + ": \"" +
+                        text.substring(match.getFromPos(), match.getToPos()) + "\"");
+                System.out.println("Você quis dizer: ");
+                try {
+                    String[] suggestions = getSuggests(text.substring(match.getFromPos(), match.getToPos()));
+                    for(String suggestion: suggestions)
+                        System.out.println(suggestion);
+                } catch (Exception ex) {
+                    Logger.getLogger(Corretor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -42,7 +44,7 @@ public class Corretor {
         spellChecker.indexDictionary(new PlainTextDictionary(new File("C:/Users/ATENDIMENTO 13/Desktop/Sugestões Correção/Dicionário/pt-BR.dic").toPath()),
                 new IndexWriterConfig(new StandardAnalyzer()), false);
         
-        int suggestionsNumber = 5;
+        int suggestionsNumber = 3;
         String[] suggestions = spellChecker.suggestSimilar(wordForSuggestions, suggestionsNumber);
         return suggestions;
     }
