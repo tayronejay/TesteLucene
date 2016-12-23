@@ -10,6 +10,7 @@ public class Principal {
         System.out.println("Digite uma frase: ");
         String frase = sc.nextLine();
         Corretor corretor = new Corretor();
-        corretor.getErrors(frase);
+        for(String text: corretor.getErrors(frase))
+            System.out.println(text);
     }
 }
