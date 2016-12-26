@@ -38,11 +38,11 @@ public class Corretor {
     }
     
     private String[] getSuggests(String wordForSuggestions) throws Exception {
-        File dir = new File("C:/Users/ATENDIMENTO 13/Desktop/Sugestões Correção/Arquivos Lucene");
+        File dir = new File(System.getProperty("user.dir"));
         Directory directory = FSDirectory.open(dir.toPath());
         SpellChecker spellChecker = new SpellChecker(directory);
         
-        spellChecker.indexDictionary(new PlainTextDictionary(new File("C:/Users/ATENDIMENTO 13/Desktop/Sugestões Correção/Dicionário/pt-BR.dic").toPath()),
+        spellChecker.indexDictionary(new PlainTextDictionary(new File(System.getProperty("user.dir") + "/pt-BR.dic").toPath()),
                 new IndexWriterConfig(new StandardAnalyzer()), false);
         
         int suggestionsNumber = 2;
