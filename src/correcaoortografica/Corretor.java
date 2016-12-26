@@ -1,4 +1,4 @@
-package testelucene;
+package correcaoortografica;
 
 import java.io.File;
 import java.io.IOException;
